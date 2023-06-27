@@ -1,19 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/assets/js/jquery-3.7.0.min.js"></script>
     <meta charset="UTF-8">
     <title>PHP cURL</title>
 </head>
 <body>
-<h1>PHP cURL Example</h1>
-<form action="process.php" method="post">
+<h1>PHP cURL Tool</h1>
+<form action="process.php" method="post" id="myForm">
+<div>
+    <label for="method-select">Method:</label>
+
+    <select name="method" id="method-select">
+        <option value="">--Please choose method--</option>
+        <option value="get">GET</option>
+        <option value="post">POST</option>
+        <option value="put">PUT</option>
+    </select>
+</div>
+<div>
     <label for="url">URL:</label>
-    <input type="text" name="url" id="url" required><br><br>
-
-    <label for="data">Data:</label>
-    <textarea name="data" id="data" required></textarea><br><br>
-
+    <input type="text" name="url" id="url" required>
+</div>
+<div>
+    <label for="sslchk">Disable SSL Check</label>
+    <input type="checkbox" name="sslchk" id="sslchk" />
+</div>
+<div>
+    <label for="headers">Headers:</label>
+    <textarea name="headers" id="headers" ></textarea>
+</div>
+<div>
     <input type="submit" value="Submit">
+</div>
 </form>
+
+<span id="result"></span>
+
+<script>
+    $(document).ready(function() {
+        // Attach event handler to form submit
+        $('#myForm').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            var selectedValue = $("method-select").val();
+            if(selectedValue === undefined)
+            {
+                $('#result').html("Please select a method");
+                return false;
+            }
+            // Make an Ajax request
+            $.ajax({
+                url: 'http://curltool.co.il/process.php',  // URL to send the request
+                method: 'POST',  // HTTP method (GET, POST, PUT, DELETE, etc.)
+                data: $(this).serialize(),  // Serialize the form data
+                dataType: 'text',  // Expected data type of the response
+                success: function(response) {
+                    // Handle the successful response
+
+                    $('#result').html( response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle the error
+                    console.log('An error occurred: ' + error);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
